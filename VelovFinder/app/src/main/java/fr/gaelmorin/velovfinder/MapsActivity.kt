@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
+import android.icu.lang.UCharacter.GraphemeClusterBreak.L
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
@@ -13,6 +14,7 @@ import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import com.github.kittinunf.fuel.httpGet
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.common.GooglePlayServicesRepairableException
 import com.google.android.gms.common.api.ResolvableApiException
@@ -52,6 +54,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         private const val PLACE_PICKER_REQUEST = 3
     }
+
+    val URL = "https://download.data.grandlyon.com/ws/rdata/jcd_jcdecaux.jcdvelov/all.json";
+    var Stations = ArrayList<Station>()
 
     private lateinit var lastLocation: Location
 
@@ -98,6 +103,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         map.setOnMarkerClickListener(this)
 
         setUpMap()
+
+        URL.httpGet().responseObject(Resultat.Deserializer()) { request, response, result ->
+            val (result, err) = result
+
+            //Add to ArrayList
+//            result.station?.forEach { person ->
+//                Stations.add(person)
+//            }
+            println(response)
+
+//            println(Stations)
+        }
     }
 
     private fun setUpMap() {
